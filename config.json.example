@@ -1,9 +1,15 @@
 {
-    "command": "dipy_fit_dti",
-    "b0_threshold": 5,
-    "bvecs_tol"
-    "dwi": "testdata/data.nii.gz",
-    "bvals": "testdata/data.bvals",
-    "bvecs": "testdata/data.bvecs",
-    "mask": "testdata/mask.nii.gz",
+    "command": "dipy_track_pft",
+    "step_size":0.2,
+    "seed_density":1,
+    "pmf_threshold":0.1,
+    "max_angle":20.,
+    "pft_back":2,
+    "pft_front":1,
+    "pft_count":15,
+    "peaks":"",
+    "wm":"",
+    "gm":"",
+    "csf":"",
+    "seed":"",
 }

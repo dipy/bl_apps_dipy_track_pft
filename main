@@ -9,15 +9,19 @@ set -x
 cmd=`jq -r .command config.json`
 case "$cmd" in
 
-    dipy_fit_dti)
+    dipy_track_pft)
         cat > script.sh <<EOF
 #!/bin/bash
 $cmd --force \
     --out_dir $(pwd) \
-    --b0_threshold $(jq -r .b0_threshold config.json) \
-    --bvecs_tol $(jq -r .bvecs_tol config.json) \
-    --out_strat what \
-    $(jq -r .dwi config.json) $(jq -r .bvals config.json) $(jq -r .bvecs config.json) $(jq -r .mask config.json)
+    --step_size $(jq -r .step_size config.json) \
+    --seed_density $(jq -r .seed_density config.json) \
+    --pmf_threshold $(jq -r .pmf_threshold config.json) \
+    --max_angle $(jq -r .max_angle config.json) \
+    --pft_back $(jq -r .pft_back config.json) \
+    --pft_front $(jq -r .pft_front config.json) \
+    --pft_count $(jq -r .pft_count config.json) \
+    $(jq -r .peaks config.json) $(jq -r .wm config.json) $(jq -r .gm config.json) $(jq -r .csf config.json) $(jq -r .seed config.json)
 EOF
         ;;
     *)
