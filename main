@@ -1,19 +1,20 @@
 #!/bin/bash
-#PBS -l nodes=1:ppn=6
+#PBS -l nodes=1:ppn=8
 #PBS -l vmem=16gb
 #PBS -l walltime=10:00:00
+
+export SINGULARITYENV_OMP_NUM_THREADS=7
 
 set -e
 set -x
 
-cmd=`jq -r .command config.json`
-case "$cmd" in
+mkdir -p output
+chmod -R +w output
 
-    dipy_track_pft)
-        cat > script.sh <<EOF
-#!/bin/bash
-$cmd --force \
-    --out_dir $(pwd) \
+time singularity exec -e docker://brainlife/dipy:1.1.1 dipy_track_pft \
+    --force \
+    --out_dir output \
+    --out_tractogram track.trk \
     --step_size $(jq -r .step_size config.json) \
     --seed_density $(jq -r .seed_density config.json) \
     --pmf_threshold $(jq -r .pmf_threshold config.json) \
@@ -21,15 +22,8 @@ $cmd --force \
     --pft_back $(jq -r .pft_back config.json) \
     --pft_front $(jq -r .pft_front config.json) \
     --pft_count $(jq -r .pft_count config.json) \
-    $(jq -r .peaks config.json) $(jq -r .wm config.json) $(jq -r .gm config.json) $(jq -r .csf config.json) $(jq -r .seed config.json)
-EOF
-        ;;
-    *)
-        echo "invalid command: $cmd"
-        exit 1
-esac
-
-chmod +x script.sh
-SINGULARITYENV_PYTHONNOUSERSITE=true singularity exec -e docker://brainlife/dipy:1.1.1 ./script.sh
+    $(jq -r .peaks config.json) $(jq -r .wm config.json) \
+    $(jq -r .gm config.json) $(jq -r .csf config.json) \
+    $(jq -r .seeds config.json)
 
 echo "done"
