@@ -3,6 +3,57 @@
 
 # Dipy Tractography
 
+<!-- brainlife-app:begin (generated from the App manifest; edit the manifest, not this block) -->
+
+> **Tracks streamlines with DIPY particle filtering tractography (dipy_track_pft, 1.1.1) from peaks with white matter, gray matter and CSF maps, and outputs a .trk tractogram.**
+
+Runs dipy_track_pft, which uses anatomically constrained particle filtering to recover streamlines that stop in invalid tissue. Use it when you have ODF peaks (for example from CSA or CSD fitting) and tissue masks in diffusion space. Seeds are placed in the seed mask at seed_density per voxel dimension.
+
+| | |
+|---|---|
+| 📥 **Inputs** | `neuro/peaks_and_metrics` · `neuro/mask` ×4 |
+| 📤 **Outputs** | `neuro/track/trk` |
+| 🐳 **Container** | `brainlife/dipy:1.1.1` |
+| ⚙️ **Resources** | 8 CPUs |
+| 🔗 **Run it** | [doi.org/10.25663/brainlife.app.328](https://doi.org/10.25663/brainlife.app.328) |
+
+#### 📥 Inputs
+
+| Input | Datatype | Required | Description |
+|---|---|---|---|
+| `peaks` | `neuro/peaks_and_metrics` | yes | ODF peaks and metrics (DIPY .pam5) used for direction getting. |
+| `wm` | `neuro/mask` (white_matter, dwi) | yes | White matter map in diffusion space (include map). |
+| `gm` | `neuro/mask` (gray_matter, dwi) | yes | Gray matter map in diffusion space. |
+| `csf` | `neuro/mask` (csf, dwi) | yes | CSF map in diffusion space (exclude map). |
+| `seeds` | `neuro/mask` (dwi) | yes | Seed mask in diffusion space. |
+
+#### 📤 Outputs
+
+| Output | Datatype | Description |
+|---|---|---|
+| `output` | `neuro/track/trk` | Tractogram (track.trk). |
+
+<details>
+<summary><b>⚙️ Parameters</b> (7)</summary>
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `step_size` | number | `0.2` | Step size used for tracking (default 0.2mm). |
+| `seed_density` | number | `1` | Number of seeds per dimension inside voxel (default 1). For example, seed_density of 2 means 8 regularly distributed points in the voxel. |
+| `pmf_threshold` | number | `0.1` | Threshold for ODF functions (default 0.1). |
+| `max_angle` | number | `20` | Maximum angle between streamline segments (range [0, 90], default 20). |
+| `pft_back` | number | `2` | Distance in mm to back track before starting the particle filtering tractography (default 2mm). The total particle filtering tractography distance is equal to back_tracking_dist + front_tracking_dist. |
+| `pft_front` | number | `1` | Distance in mm to run the particle filtering tractography after the back track distance (default 1mm). The total particle filtering tractography distance is equal to back_tracking_dist + front_tracking_dist. |
+| `pft_count` | number | `15` | Number of particles to use in the particle filter (default 15). |
+
+</details>
+
+📚 **References used by this App:**
+- Garyfallidis E, et al. Dipy, a library for the analysis of diffusion MRI data. Front Neuroinform 8:8 (2014). [doi:10.3389/fninf.2014.00008](https://doi.org/10.3389/fninf.2014.00008)
+- Avesani P, et al. The open diffusion data derivatives, brain data upcycling via integrated publishing of derivatives and reproducible open cloud services. Sci Data 6:69 (2019). [doi:10.1038/s41597-019-0073-y](https://doi.org/10.1038/s41597-019-0073-y)
+
+<!-- brainlife-app:end -->
+
 The App uses the Particle Filtering Tracking method to do a tractography.
 
 ### Authors
